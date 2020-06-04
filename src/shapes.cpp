@@ -179,29 +179,20 @@ public:
 			// Split along longest dimension of outer bounding box
 			struct sortFunc {
 				bool operator() (BVHNode p1, BVHNode p2) {
-					Vec3 center1 = boxSize * (1/2) + BBox.min;
-					return temp1 >= temp2;
+					T temp1, temp2;
+					Vec3 bbCenter1, bbCenter2;
+					bbCenter1 = (p1.BBox.max - p1.BBox.min) / 2;
+					bbCenter2 = (p2.BBox.max - p2.BBox.min) / 2;
+					if (boxSize.x > boxSize.y && boxSize.x > boxSize.z) {
+						return bbCenter1.x >= bbCenter2.x;
+					} else if (boxSize.y > boxSize.x && boxSize.y > boxSize.z) {
+						return bbCenter1.y >= bbCenter2.y;
+					} else {
+						return bbCenter1.z >= bbCenter2.z;
+					}
 				}
 			}
 			std::sort(shapeArr.begin(), shapeArr.end(), sortFunc);
-
-			let boxSize = BBox.max.clone().sub(BBox.min);
-			let temp = new THREE.Vector3();
-			// Split along longest dimension of outer bounding box
-			let boxCenter = function(box) { 
-				let center = new THREE.Vector3();
-				box.getCenter(center);
-				return center;
-			};
-			let sortLambda = null;
-			if (boxSize.x > boxSize.y && boxSize.x > boxSize.z) {
-				sortLambda = function(box) { return boxCenter(box).x; };
-			} else if (boxSize.y > boxSize.x && boxSize.y > boxSize.z) {
-				sortLambda = function(box) { return boxCenter(box).y; };
-			} else {
-				sortLambda = function(box) { return boxCenter(box).z; };
-			}
-			shapeArr = shapeArr.sort(function(b1, b2) { return sortLambda(b1.bbox) - sortLambda(b2.bbox); });
 			return new BVHNode(NULL, 
 													BBox, 
 													popTree(shapeArr.slice(0, floor(shapeArr.size() / 2))), 
