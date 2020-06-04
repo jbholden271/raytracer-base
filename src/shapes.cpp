@@ -139,40 +139,52 @@ public:
 class BVHNode {
 public: 
 	Shape shape;
+	BVHNode left;
+	BVHNode right;
 	BB BBox;
 	bool isShape;
+	BVHNode(Shape sp, BVHNode lp, BVHNode rp, BB bbp, bool ip) {
+		shape = sp;
+		BVHNode lp;
+		BVHNode rp;
+		BBox = bbp;
+		isShape = ip;
+	}
 }
 
 
 class BVH {
 public:
 	std::vector<Shape> unbounded;
-	std::vector<Shape> bvhTree;
+	std::vector<BVHNode> bvhTree;
 	BVH(std::vector<Shape> shapes) {
 		for (int i = 0; i < shapes.size(); i++) {
 			BB BBox = shapes[i].boundingBox();
 			if (BBox != NULL) {
-				this.bvhTree.push_back({shape: shapes[i], bbox: BBox, isShape: true});
+				bvhTree.push_back(new BVHNode(shapes[i], NULL, NULL, BBox, true));
 			} else {
-				this.unbounded.push_back(shapes[i]);
+				unbounded.push_back(shapes[i]);
 			}
 		}
-	}
-	// WIP:
-	constructor(shapes) {
-		this.unbounded = [];
-		this.bvhTree = [];
-		for (int i = 0; i < shapes.length; i++) {
-			
-		}
-		function popTree(shapeArr) {
-			if (shapeArr.length == 1) {
+		BVHNode popTree(shapeArr) {
+			if (shapeArr.size() == 1) {
 				return shapeArr[0];
 			}
-			let BBox = new THREE.Box3(shapeArr[0].min, shapeArr[0].max);
-			for (let i = 0; i < shapeArr.length; ++i) {
+			BB BBox = new BoundingBox(shapeArr[0].min, shapeArr[0].max);
+			for (let i = 0; i < shapeArr.size(); ++i) {
 				BBox.union(shapeArr[i].bbox);
 			}
+			Vec3 boxSize = BBox.max - BBox.min;
+			Vec3 temp = new Vec3();
+			// Split along longest dimension of outer bounding box
+			struct sortFunc {
+				bool operator() (BVHNode p1, BVHNode p2) {
+					Vec3 center1 = boxSize * (1/2) + BBox.min;
+					return temp1 >= temp2;
+				}
+			}
+			std::sort(shapeArr.begin(), shapeArr.end(), sortFunc);
+
 			let boxSize = BBox.max.clone().sub(BBox.min);
 			let temp = new THREE.Vector3();
 			// Split along longest dimension of outer bounding box
@@ -190,14 +202,15 @@ public:
 				sortLambda = function(box) { return boxCenter(box).z; };
 			}
 			shapeArr = shapeArr.sort(function(b1, b2) { return sortLambda(b1.bbox) - sortLambda(b2.bbox); });
-			return {bbox: BBox, 
-							left: popTree(shapeArr.slice(0, Math.floor(shapeArr.length / 2))), 
-							right: popTree(shapeArr.slice(Math.floor(shapeArr.length / 2), shapeArr.length)), 
-							isShape: false};
+			return new BVHNode(NULL, 
+													BBox, 
+													popTree(shapeArr.slice(0, floor(shapeArr.size() / 2))), 
+													popTree(shapeArr.slice(floor(shapeArr.size() / 2), shapeArr.length)), 
+													false);
 		}
-		if (this.bvhTree.length == 0) {
-			this.bvhTree = {bbox: new THREE.Box3(), isShape: false};
+		if (bvhTree.size() == 0) {
+			bvhTree = BVHNode(NULL, new BoundingBox(), false);
 		}
-		this.bvhTree = popTree(this.bvhTree);
+		bvhTree = popTree(bvhTree);
 	}
 }
