@@ -59,6 +59,37 @@ public:
 	T ior;       // index of refraction  (transparent material)
 	// constructors (determines qualities of a material)
 	// WIP: CONSTRUCTORS FOR DIFFUSE, PHONG, MIRROR, AND GLASS MATERIALS
+	Material() {
+		ka = NULL;
+		kd = NULL;
+		ks = NULL;
+		kr = NULL;
+		kt = NULL;
+		p = 0;
+		ior = 0;
+	}
+
+	void DiffuseMaterial(Vec3<T> kap, Vec3<T> kdp) {
+		ka = kap;
+		kd = kdp;
+	}
+
+	void PhongMaterial(Vec3<T> kap, Vec3<T> kdp, Vec3<T> ksp, T pp) {
+		ka = kap;
+		kd = kdp;
+		ks = ksp;
+		p = pp;
+	}
+
+	void MirrorMaterial(Vec3<T> krp) {
+		kr = krp;
+	}
+
+	void GlassMaterial(Vec3<T> krp, Vec3<T> ktp, T iorp) {
+		kr = krp;
+		kt = ktp;
+		ior = iorp;
+	}
 }
 
 template <typename T>
