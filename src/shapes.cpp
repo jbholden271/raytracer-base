@@ -195,8 +195,8 @@ public:
 			std::sort(shapeArr.begin(), shapeArr.end(), sortFunc);
 			return new BVHNode(NULL, 
 													BBox, 
-													popTree(shapeArr.slice(0, floor(shapeArr.size() / 2))), 
-													popTree(shapeArr.slice(floor(shapeArr.size() / 2), shapeArr.length)), 
+													popTree(std::vector(shapeArr.begin(), shapeArr.begin()+floor(shapeArr.size() / 2))), 
+													popTree(std::vector(shapeArr.begin()+floor(shapeArr.size() / 2), shapeArr.end())), 
 													false);
 		}
 		if (bvhTree.size() == 0) {
