@@ -175,7 +175,7 @@ public:
 				BBox.union(shapeArr[i].bbox);
 			}
 			Vec3 boxSize = BBox.max - BBox.min;
-			Vec3 temp = new Vec3();
+			Vec3 temp = new Vec();
 			// Split along longest dimension of outer bounding box
 			struct sortFunc {
 				bool operator() (BVHNode p1, BVHNode p2) {
@@ -200,7 +200,7 @@ public:
 													false);
 		}
 		if (bvhTree.size() == 0) {
-			bvhTree = BVHNode(NULL, new BoundingBox(), false);
+			bvhTree = BVHNode(NULL, NULL, NULL, new BoundingBox(), false);
 		}
 		bvhTree = popTree(bvhTree);
 	}

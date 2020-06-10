@@ -58,7 +58,6 @@ public:
 	T p;         // specular shininess   (power)
 	T ior;       // index of refraction  (transparent material)
 	// constructors (determines qualities of a material)
-	// WIP: CONSTRUCTORS FOR DIFFUSE, PHONG, MIRROR, AND GLASS MATERIALS
 	Material() {
 		ka = NULL;
 		kd = NULL;
@@ -73,18 +72,15 @@ public:
 		ka = kap;
 		kd = kdp;
 	}
-
 	void PhongMaterial(Vec3<T> kap, Vec3<T> kdp, Vec3<T> ksp, T pp) {
 		ka = kap;
 		kd = kdp;
 		ks = ksp;
 		p = pp;
 	}
-
 	void MirrorMaterial(Vec3<T> krp) {
 		kr = krp;
 	}
-
 	void GlassMaterial(Vec3<T> krp, Vec3<T> ktp, T iorp) {
 		kr = krp;
 		kt = ktp;
@@ -107,5 +103,31 @@ public:
 		min = minp;
 		max = maxp;
 	}
-	// WIP: CONTAINSPOINT(VEC3), EXPANDBYPOINT(VEC3), ISEMPTY(), SET(VEC3, VEC3)
+	bool containsPoint(Vec3<T> point) {
+		return (min.x <= point.x) && (min.y <= point.y) && (min.z <= point.z) && 
+							(max.x >= point.x) && (max.y >= point.y) && (max.z >= point.z);
+	}
+	bool isEmpty() {
+		return !((max.x >= min.x) && (max.y >= min.y) && (max.z >= min.z));
+	}
+	void expandByPoint(Vec3<T> point) {
+		min.x = (min.x < point.x) ? min.x : point.x;
+		min.y = (min.y < point.y) ? min.y : point.y;
+		min.z = (min.z < point.z) ? min.z : point.z;
+		max.x = (max.x > point.x) ? max.x : point.x;
+		max.y = (max.y > point.y) ? max.y : point.y;
+		max.z = (max.z > point.z) ? max.z : point.z;
+	}
+	void set(Vec3<T> newMin, Vec3<T> newMax) {
+		min = newMin;
+		max = newMax;
+	}
+	void union(BoundingBox boxp) {
+		min.x = (min.x <= boxp.min.x) ? min.x : boxp.min.x;
+		min.y = (min.y <= boxp.min.y) ? min.y : boxp.min.y;
+		min.z = (min.z <= boxp.min.z) ? min.z : boxp.min.z;
+		max.x = (max.x >= boxp.max.x) ? max.x : boxp.max.x;
+		max.y = (max.y >= boxp.max.y) ? max.y : boxp.max.y;
+		max.z = (max.z >= boxp.max.z) ? max.z : boxp.max.z;
+	}
 }
