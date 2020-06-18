@@ -5,7 +5,7 @@
 #define PI 3.14159265359
 #define INF 1e8
 
-/* Trace ray in the scene and return color of ray. 'depth' is the current recursion depth.
+/* Trace ray in the scene and return spolor of ray. 'depth' is the current recursion depth.
  * If intersection material has non-null kr or kt, perform recursive ray tracing. */
 Vec3 raytracing(Ray ray, T depth) {
 	let color = new Vec(0, 0, 0);
@@ -71,7 +71,7 @@ Intersection rayIntersectScene(Ray ray, BVH tree) {
 				if(isect == NULL) isect = hit; // if this is the first time intersection is found
 				else isect.set(hit); // update intersection point
 			}
-		} else if ((new Ray(ray.o, ray.d)).intersectBox(node.bbox, new Vec()) != NULL) { //WIP: CREATE INTERSECTBOX() IN RAY
+		} else if ((new Ray(ray.o, ray.d)).intersectBox(node.bbox) != NULL) {
 			minIPoint(node.left);
 			minIPoint(node.right);
 		}

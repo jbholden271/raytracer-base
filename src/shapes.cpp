@@ -35,8 +35,13 @@ public:
 		direction = dp;
 		direction.normalize();
 	}
-	pointAt(T t) {
+	Vec pointAt(T t) {
 		return direction * t + origin;
+	}
+	bool intersectBox(BB box) {
+		if(box.containsPoint(origin)) {
+			return true;
+		}
 	}
 }
 
@@ -63,8 +68,10 @@ public:
 		if(t < tmin || t > tmax) { return null; }
 		Vec iPoint = ray.pointAt(t);
 		return new Intersection(t, iPoint, n, mat);
-	};
-
+	}
+	BB boundingBox() {
+		return NULL;
+	}
 }
 
 
@@ -98,6 +105,9 @@ public:
 			Vec iPoint = ray.pointAt(t);
 			return temp = new Intersection(t, iPoint, (iPoint-c).normalize(), mat);
 		}
+	}
+	BB boundingBox() {
+		return new BB(c-r, c+r);
 	}
 }
 
@@ -133,6 +143,13 @@ public:
 			}
 		}
 		return null;
+	}
+	BB boundingBox() {
+		BB newBB = new BB();
+		newBB.expandByPoint(P0);
+		newBB.expandByPoint(P1);
+		newBB.expandByPoint(P2);
+		return newBB;
 	}
 }
 
@@ -170,9 +187,9 @@ public:
 			if (shapeArr.size() == 1) {
 				return shapeArr[0];
 			}
-			BB BBox = new BoundingBox(shapeArr[0].min, shapeArr[0].max);
+			BB BBox = new BB(shapeArr[0].min, shapeArr[0].max);
 			for (let i = 0; i < shapeArr.size(); ++i) {
-				BBox.union(shapeArr[i].bbox);
+				BBox.boxUnion(shapeArr[i].bbox);
 			}
 			Vec3 boxSize = BBox.max - BBox.min;
 			Vec3 temp = new Vec();
@@ -200,7 +217,7 @@ public:
 													false);
 		}
 		if (bvhTree.size() == 0) {
-			bvhTree = BVHNode(NULL, NULL, NULL, new BoundingBox(), false);
+			bvhTree = BVHNode(NULL, NULL, NULL, new BB(), false);
 		}
 		bvhTree = popTree(bvhTree);
 	}

@@ -22,17 +22,18 @@ public:
 		z = zp;
 	}
 	// operator overloads
-	Vec3<T> operator + (T s) const { return Vec3<T>(x+s, y+s, z+s); }
-	Vec3<T> operator + (Vec3<T> v) const { return Vec3<T>(x+v.x, y+v.y, z+v.z); }
-	Vec3<T> operator - () const { return Vec3<T>(-x, -y, -z); }
-	Vec3<T> operator - (T s) const { return Vec3<T>(x-s, y-s, z-s); }
-	Vec3<T> operator - (Vec3<T> v) const { return Vec3<T>(x-v.x, y-v.y, z-v.z); }
-	Vec3<T> operator * (T s) const { return Vec3<T>(x*s, y*s, z*s); }
-	Vec3<T> operator * (Vec3<T> v) const { return Vec3<T>(x*v.x, y*v.y, z*v.z); }
-	Vec3<T> operator / (Vec3<T> v) const { return Vec3<T>(x/v.x, y/v.y, z/v.z); }
-	Vec3<T> cross(Vec3<T> v) const { return Vec3<T>(y*v.z-z*v.y, z*v.x-x*v.z, x*v.y-y-v.x); }
-	T dot(Vec3<T> v) const { return x*v.x + y*v.y + z*v.z; }
-	T len2() const { return x*x + y*y + z*z; }
+	Vec3<T> operator + (T s) { return new Vec3<T>(x+s, y+s, z+s); }
+	Vec3<T> operator + (Vec3<T> v) { return new Vec3<T>(x+v.x, y+v.y, z+v.z); }
+	Vec3<T> operator - () { return new Vec3<T>(-x, -y, -z); }
+	Vec3<T> operator - (T s) { return new Vec3<T>(x-s, y-s, z-s); }
+	Vec3<T> operator - (Vec3<T> v) { return new Vec3<T>(x-v.x, y-v.y, z-v.z); }
+	Vec3<T> operator * (T s) { return new Vec3<T>(x*s, y*s, z*s); }
+	Vec3<T> operator * (Vec3<T> v) { return new Vec3<T>(x*v.x, y*v.y, z*v.z); }
+	Vec3<T> operator / (T s) { return new Vec3<T>(x/s, y/s, z/s); }
+	Vec3<T> operator / (Vec3<T> v) { return new Vec3<T>(x/v.x, y/v.y, z/v.z); }
+	Vec3<T> cross(Vec3<T> v) { return new Vec3<T>(y*v.z-z*v.y, z*v.x-x*v.z, x*v.y-y-v.x); }
+	T dot(Vec3<T> v) { return x*v.x + y*v.y + z*v.z; }
+	T len2() { return x*x + y*y + z*z; }
 	void normalize() { 
 		T nSca = sqrt(len2());
 		x = x / nSca;
@@ -122,7 +123,7 @@ public:
 		min = newMin;
 		max = newMax;
 	}
-	void union(BoundingBox boxp) {
+	void boxUnion(BoundingBox boxp) {
 		min.x = (min.x <= boxp.min.x) ? min.x : boxp.min.x;
 		min.y = (min.y <= boxp.min.y) ? min.y : boxp.min.y;
 		min.z = (min.z <= boxp.min.z) ? min.z : boxp.min.z;
